@@ -62,6 +62,7 @@ module fpga_top (
     .BAUDRATE(9600)       // serial baud rate
   ) apu_inst (
     .clk     (apu_clk),
+    .reset_n (rtsn),
     .rx      (rx),
     .blink   (blink),
     .link    (link),

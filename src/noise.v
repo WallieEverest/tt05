@@ -40,25 +40,25 @@ module noise (
   wire        mode_flag        = reg_400E[7];
   wire [ 4:0] length_select    = reg_400F[7:3];
 
-  reg [ 7:0] length_counter = 0;
-  reg [11:0] timer = 0;
+  reg [ 7:0] length_counter;
+  reg [11:0] timer;
   reg [11:0] timer_preset;
-  reg [14:0] shift_register = 0;
-  reg timer_event = 0;
-
+  reg [14:0] shift_register;
+  reg        timer_event;
   reg [ 7:0] length_preset;
 
   wire length_count_zero = ( length_counter == 0 );
-  wire timer_count_zero  = ( timer == 0 );
   wire feedback = mode_flag ? shift_register[6] ^ shift_register[0]
                             : shift_register[1] ^ shift_register[0];
 
   // Linear Feedback Shift Register
   always @( posedge clk ) begin : noise_lfsr
-    if ( timer_event )
-      shift_register <= {feedback, shift_register[14:1]};  // right shift with feedback
-    else if ( shift_register == 0 )  // ensure register is initialized
+    if ( shift_register != 0 ) begin // ensure register is initialized
+      if ( timer_event )
+        shift_register <= {feedback, shift_register[14:1]};  // right shift with feedback
+    end else begin
       shift_register <= 1;
+    end
   end
 
   // Length counter
@@ -107,12 +107,13 @@ module noise (
   end
 
   // Timer, ticks at 1.79 MHz
-  always @( posedge clk ) begin : noise_timer
-    timer_event <= timer_count_zero;
-    if ( timer_count_zero )
-      timer <= timer_preset;
-    else
+  always @( posedge clk ) begin : triangle_timer
+    timer_event <= ( timer == 0 );
+
+    if ( timer != 0 )
       timer <= timer - 1;
+    else
+      timer <= timer_preset;
   end
 
   always @* begin : noise_timer_lookup

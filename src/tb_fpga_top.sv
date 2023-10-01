@@ -36,7 +36,7 @@ module a_tb_fpga_top ();
   reg  clk = 0;
   reg  sck = 0;
   wire dtrn = 1;
-  wire rtsn = 1;
+  reg  rtsn = 0;
   wire [7:0] ui_in;
   wire [7:0] uo_out;
   wire rx = message[0];
@@ -62,6 +62,7 @@ module a_tb_fpga_top ();
 
   initial begin
     repeat (2) @(negedge sck);
+    rtsn <= 1;
 
     // # Square 1
     // 08 82 30 80 00 84 00 86 #Clear $30 $08 $00 $00

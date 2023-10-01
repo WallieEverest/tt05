@@ -15,7 +15,9 @@ module system #(
   parameter BAUDRATE = 9600        // serial data rate
 )(
   input  wire clk,      // system clock
+  input  wire reset_n,  // system reset
   input  wire rx,       // serial input data
+  output reg  reset,    // synchronous reset
   output wire blink,    // 1 Hz
   output reg  link,     // serial activity
   output reg  uart_clk  // 6x baud rate, 57,600 Hz
@@ -24,6 +26,7 @@ module system #(
   localparam UART_DIVISOR = (CLKRATE / BAUDRATE / 6);  // 31: 9600 baud => 57,600 Hz
   localparam KHZ_DIVISOR  = (CLKRATE / 1000);  // 1789: 1000 Hz
 
+  reg reset_meta;
   reg event_1khz;
   reg rx_meta;
   reg sdi;
@@ -35,7 +38,17 @@ module system #(
   
   assign blink = count_1hz[9];  // toggle LED at 1 Hz
 
-  always @( posedge clk ) begin
+  always @( posedge clk, negedge reset_n ) begin : system_reset
+    if ( reset_n == 0 ) begin
+      reset      <= 1;
+      reset_meta <= 1;
+    end else begin
+      reset      <= reset_meta;
+      reset_meta <= !reset_n;
+    end
+  end
+
+  always @( posedge clk ) begin : system_uart
     rx_meta      <= rx;       // capture asynchronous input
     sdi          <= rx_meta;  // align input to the system clock
     sdi_delay[0] <= sdi;      // asynchronous input

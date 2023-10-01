@@ -24,7 +24,7 @@ module frame #(
 localparam PRESCALE = (CLKRATE / 240);  // quarter-frame rate
 
 reg [13:0] prescaler;  // size allows max system clock of 3.9 MHz
-reg [ 1:0] divider = 0;
+reg [ 1:0] divider;
 wire prescaler_zero = ( prescaler == 0 );
 
 always @ ( posedge clk ) begin : frame_generator
@@ -32,11 +32,15 @@ always @ ( posedge clk ) begin : frame_generator
   enable_120hz <= ( prescaler_zero && !divider[0] );
   enable_60hz  <= ( prescaler_zero && !divider[1] & !divider[0] );
 
-  if ( !prescaler_zero ) begin
+  if ( prescaler != 0 ) begin
     prescaler <= prescaler[13:0] - 1;
   end else begin
     prescaler <= PRESCALE-1;
-    divider <= divider+1;
+    
+    if ( divider != 0 )
+      divider <= divider - 1;
+    else
+      divider <= ~0;
   end
 end
 

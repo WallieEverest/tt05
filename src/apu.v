@@ -15,6 +15,7 @@ module apu #(
   parameter BAUDRATE = 9600       // serial baud rate
 )(
   input  wire clk,       // APU clock
+  input  wire reset_n,   // asynchrounous reset, active-low
   input  wire rx,        // serial input
   output wire blink,     // status LED
   output wire link,      // link LED
@@ -26,6 +27,7 @@ module apu #(
   output wire tx         // serial output
 );
 
+  wire reset;
   wire uart_clk;  // 48 kHz
   wire enable_240hz;
   wire enable_120hz;
@@ -50,7 +52,9 @@ module apu #(
     .BAUDRATE(BAUDRATE)
   ) system_inst (
     .clk     (clk),
+    .reset_n (reset_n),
     .rx      (rx),
+    .reset   (reset),
     .blink   (blink),
     .link    (link),
     .uart_clk(uart_clk)
@@ -74,6 +78,7 @@ module apu #(
 
   registers registers_inst (
     .clk       (clk),
+    .reset     (reset),
     .uart_addr (uart_addr),
     .uart_data (uart_data),
     .uart_ready(uart_ready),
@@ -116,6 +121,7 @@ module apu #(
 
   triangle triangle_inst (
     .clk          (clk),
+    .reset        (reset),
     .enable_240hz (enable_240hz),
     .reg_4008     (reg_array[4'h8]),
     .reg_400A     (reg_array[4'hA]),

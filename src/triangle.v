@@ -27,13 +27,14 @@
 `default_nettype none
 
 module triangle (
-  input wire       clk,
-  input wire       enable_240hz,
-  input wire [7:0] reg_4008,
-  input wire [7:0] reg_400A,
-  input wire [7:0] reg_400B,
-  input wire       reg_event,
-  output reg [3:0] triangle_data
+  input  wire       clk,
+  input  wire       reset,
+  input  wire       enable_240hz,
+  input  wire [7:0] reg_4008,
+  input  wire [7:0] reg_400A,
+  input  wire [7:0] reg_400B,
+  input  wire       reg_event,
+  output reg  [3:0] triangle_data
 );
 
   // Input assignments
@@ -42,18 +43,17 @@ module triangle (
   wire [ 10:0] timer_preset  = {reg_400B[2:0], reg_400A};
   wire [ 4:0]  length_select = reg_400B[7:3];
 
-  reg [ 4:0] sequencer = 0;
-  reg [ 6:0] linear_counter = 0;
-  reg [ 7:0] length_counter = 0;
+  reg [ 4:0] sequencer;
+  reg [ 6:0] linear_counter;
+  reg [ 7:0] length_counter;
   reg [ 7:0] length_preset;
-  reg [10:0] timer = 0;
-  reg linear_reload = 0;
-  reg timer_event = 0;
+  reg [10:0] timer;
+  reg        linear_reload;
+  reg        timer_event ;
 
   wire length_count_zero = ( length_counter == 0 );
   wire linear_count_one  = ( linear_counter == 1 );
   wire linear_count_zero = ( linear_counter == 0 );
-  wire timer_count_zero  = ( timer == 0 );
 
   // Linear counter
   always @( posedge clk ) begin : triangle_linear_counter
@@ -115,21 +115,24 @@ module triangle (
 
   // Timer, ticks at 1.79 MHz
   always @( posedge clk ) begin : triangle_timer
-    timer_event <= timer_count_zero;
-    if ( timer_count_zero )
-      timer <= timer_preset;
-    else
+    timer_event <= ( timer == 0 );
+
+    if ( timer != 0 )
       timer <= timer - 1;
+    else
+      timer <= timer_preset;
   end
 
   // Sequencer
   always @( posedge clk ) begin : triangle_sequencer
-    if ( !sequencer[4] )
-      triangle_data <= ~sequencer[3:0];  // count down for first half of sequencer count
-    else
+    if ( sequencer[4] != 0)
       triangle_data <= sequencer[3:0];  // count up for second half of sequencer count
+    else
+      triangle_data <= ~sequencer[3:0];  // count down for first half of sequencer count
 
-    if ( timer_event && !linear_count_zero && !length_count_zero )  // DEBUG nasty logic width
+    if ( reset )
+      sequencer <= ~0;
+    else if ( timer_event && !linear_count_zero && !length_count_zero ) // DEBUG nasty logic width
       sequencer <= sequencer + 1;
   end
 

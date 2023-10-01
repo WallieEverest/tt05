@@ -47,14 +47,14 @@ module square (
   wire [10:0] timer_preset    = {reg_4003[2:0], reg_4002};
   wire [ 4:0] length_select   = reg_4003[7:3];
 
-  reg [ 2:0] index = 0;
-  reg [ 2:0] sweep_counter = 0;
-  reg [ 3:0] decay_counter = 0;
-  reg [ 3:0] envelope_counter = 0;
-  reg [ 7:0] length_counter = 0;
-  reg [11:0] timer = 0;
-  reg [10:0] timer_load = 0;
-  reg timer_event = 0;
+  reg [ 2:0] index;
+  reg [ 2:0] sweep_counter;
+  reg [ 3:0] decay_counter;
+  reg [ 3:0] envelope_counter;
+  reg [ 7:0] length_counter;
+  reg [11:0] timer;
+  reg [10:0] timer_load;
+  reg        timer_event;
 
   reg [ 7:0] duty_cycle_pattern;
   reg [ 7:0] length_preset;
@@ -159,10 +159,10 @@ module square (
   always @( posedge clk ) begin : square_timer  // originally at 1.79 MHz
     timer_event <= ( timer == 0 );
 
-    if ( timer == 0 )
-      timer <= {timer_load, 1'b0};  // double the timer period
-    else
+    if ( timer != 0 )
       timer <= timer - 1;
+    else
+      timer <= {timer_load, 1'b0};  // double the timer period
   end
 
   // Duty cycle

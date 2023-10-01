@@ -20,7 +20,7 @@
 module tt_um_morningjava_top (
   input  wire       clk,      // System clock, 1.789773 MHz
   /* verilator lint_off UNUSEDSIGNAL */
-  input  wire       rst_n,    // (unused) Active-low asynchronous reset
+  input  wire       rst_n,    // Active-low asynchronous reset
   input  wire       ena,      // (unused) Active-high design is selected
   input  wire [7:0] uio_in,   // (unused) Bidirectional input
   /* verilator lint_on UNUSEDSIGNAL */
@@ -56,6 +56,7 @@ module tt_um_morningjava_top (
     .BAUDRATE(9600)       // serial baud rate
   ) apu_inst (
     .clk     (clk),
+    .reset_n (rst_n),
     .rx      (rx),
     .blink   (blink),
     .link    (link),

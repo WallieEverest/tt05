@@ -18,7 +18,7 @@ module a_tb_morningjava_top ();
   reg  [WIDTH-1:0] message = IDLE;  // default to IDLE pattern
   reg  clk = 0;
   reg  sck = 0;
-  wire rst_n = 1;
+  reg  rst_n = 0;
   wire ena = 1;
   wire [7:0] ui_in;
   wire [7:0] uio_in = 0;
@@ -50,6 +50,7 @@ module a_tb_morningjava_top ();
 
   initial begin
     repeat (2) @(negedge sck);
+    rst_n <= 1;
 
       // SMBDIS.ASM
     // PlayBigJump:

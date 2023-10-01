@@ -24,12 +24,12 @@
 `default_nettype none
 
 module uart (
-  input  wire clk,                  // system clock
-  input  wire uart_clk,             // 6x baud clock
-  input  wire rx,                   // asynchronous serial input
-  output reg  [3:0] uart_addr = 0,  // serial address, addr[5:4] is unused
-  output reg  [7:0] uart_data = 0,  // serial data
-  output reg  uart_ready = 0        // data ready
+  input  wire clk,              // system clock
+  input  wire uart_clk,         // 6x baud clock
+  input  wire rx,               // asynchronous serial input
+  output reg  [3:0] uart_addr,  // serial address, addr[5:4] is unused
+  output reg  [7:0] uart_data,  // serial data
+  output reg  uart_ready        // data ready
 );
 
   localparam [2:0] BAUD_DIV = 6;
@@ -38,12 +38,12 @@ module uart (
   localparam START = 1'b0;
   localparam STOP = 1'b1;
 
-  reg rx_meta = 0;
-  reg sdi = 0;
-  reg [WIDTH-1:0] shift = IDLE;  // default to IDLE pattern
-  reg [2:0] baud_count = 0;
-  reg [3:0] bit_count = 0;
-  reg [6:0] data_hold = 0;
+  reg rx_meta;
+  reg sdi;
+  reg [WIDTH-1:0] shift;  // default to IDLE pattern
+  reg [2:0] baud_count;
+  reg [3:0] bit_count;
+  reg [6:0] data_hold;
   wire [7:0] data = shift[8:1];  // serial byte
   wire zero_count = ( bit_count == 0 );
   wire msg_valid = ( shift[WIDTH-1] == STOP ) && ( shift[0] == START ) && zero_count;  // valid message
@@ -62,10 +62,12 @@ module uart (
       if ( sck ) begin
         shift <= {sdi, shift[WIDTH-1:1]};  // right-shift and get next SDI bit
 
-        if ( zero_count )
+        if ( bit_count != 0 ) begin
+          if (( shift[WIDTH-1] == START ) || ( bit_count != WIDTH-1 ))  // synchronize with IDLE pattern
+            bit_count <= bit_count - 1;
+        end else begin
           bit_count <= WIDTH-1;
-        else if (( shift[WIDTH-1] == START ) || ( bit_count != WIDTH-1 ))  // synchronize with IDLE pattern
-          bit_count <= bit_count - 1;
+        end
 
         if ( msg_valid ) begin
           data_hold <= data[6:0];
