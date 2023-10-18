@@ -9,7 +9,7 @@ Separate PWM outputs are provided for each sound engine, allowing NES game music
 
 - Tiles: 1x2
 - DFF: 458
-- Total Cells: 2771
+- Total Cells: 2760
 - Utilization: 72%
 
 # TinyTapeout 5 Configuration
@@ -33,7 +33,7 @@ An analog PWM filter and audio driver are needed for the test rig.
 ## Inputs
 
 - CLK is a 1.789733 MHz clock
-- RSTN is an active-low asynchronous reset
+- RST_N is an active-low asynchronous reset
 - RX
 
 ## Outputs

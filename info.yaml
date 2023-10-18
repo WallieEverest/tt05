@@ -44,7 +44,7 @@ documentation:
     # Statistics
     - Tiles: 1x2
     - DFF: 458
-    - Total Cells: 2771
+    - Total Cells: 2760
     - Utilization: 72%
 
     # TinyTapeout 5 Configuration
