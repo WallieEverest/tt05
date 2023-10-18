@@ -47,7 +47,7 @@ module tt_um_morningjava_top (
   assign uo_out[4] = square1;   // Square1 channel
   assign uo_out[5] = square2;   // Square2 channel
   assign uo_out[6] = triangle;  // Triangle channel
-  assign uo_out[7] = noise;     // Triangle channel
+  assign uo_out[7] = noise;     // Noise channel
   assign uio_out = 0;
   assign uio_oe = 0;
 

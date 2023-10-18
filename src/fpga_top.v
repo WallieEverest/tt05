@@ -47,7 +47,7 @@ module fpga_top (
   assign uo_out[4] = square1;   // Square1 channel
   assign uo_out[5] = square2;   // Square2 channel
   assign uo_out[6] = triangle;  // Triangle channel
-  assign uo_out[7] = noise;     // Triangle channel
+  assign uo_out[7] = noise;     // Noise channel
   
   prescaler #(
     .OSCRATE(12_000_000),  // oscillator frequency

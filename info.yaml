@@ -34,11 +34,33 @@ documentation:
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
-      Explain how your project works
+    ChipTune implements an 8-bit Programmable Sound Generator (PSG).
+    Input is from a serial UART interface.
+    Output is PWM audio.
+
+    # Overview
+    This project replicates the Audio Processing Unit (APU) of vintage video games.
+
+    # Statistics
+    - Tiles: 1x2
+    - DFF: 458
+    - Total Cells: 2771
+    - Utilization: 72%
+
+    # TinyTapeout 5 Configuration
+    TT04 devices from the eFabless Multi-Project Wafer (MPW) shuttle are delivered in QFN-64 packages, mounted on a daughterboard for breakout.
+
+    Based on data from:
+    - https://github.com/WallieEverest/tt04
+
+    Changes:
+    1.) Static registers addressed by the serial UART have been connected to the external reset, providing a known startup.
+    2.) Default values for REG signals have been removed, allowing 'X' propagation during simulation until the design reaches steady state.
 
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test:  |
-      Explain how to test your project
+    The ChipTune project can be interfaced to a computer COM port (9600,n,8,1).
+    An analog PWM filter and audio driver are needed for the test rig.
 
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:

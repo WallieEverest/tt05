@@ -1,40 +1,60 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/wokwi_test/badge.svg)
 
-# What is Tiny Tapeout?
+# Overview
 
-TinyTapeout is an educational project that aims to make it easier and cheaper than ever to get your digital designs manufactured on a real chip.
+This project replicates the Audio Processing Unit (APU) of vintage video games.
+Separate PWM outputs are provided for each sound engine, allowing NES game music to be externally mixed into stereo or surround sound.
 
-To learn more and get started, visit https://tinytapeout.com.
+# Statistics
 
-## Wokwi Projects
+- Tiles: 1x2
+- DFF: 458
+- Total Cells: 2771
+- Utilization: 72%
 
-Edit the [info.yaml](info.yaml) and change the wokwi_id to the ID of your Wokwi project. You can find the ID in the URL of your project, it's the big number after `wokwi.com/projects/`.
+# TinyTapeout 5 Configuration
 
-The GitHub action will automatically fetch the digital netlist from Wokwi and build the ASIC files.
+![Top Level Drawing](image/tt05.svg)
 
-## Verilog Projects
+TT05 devices from the eFabless Multi-Project Wafer (MPW) shuttle are delivered in QFN-64 packages, mounted on a daughterboard for breakout.
 
-Edit the [info.yaml](info.yaml) and uncomment the `source_files` and `top_module` properties, and change the value of `language` to "Verilog". Add your Verilog files to the `src` folder, and list them in the `source_files` property.
+Based on data from:
+- https://github.com/WallieEverest/tt04
 
-The GitHub action will automatically build the ASIC files using [OpenLane](https://www.zerotoasiccourse.com/terminology/openlane/).
+## Changes from TT04
+- Static registers addressed by the serial UART have been connected to an external reset, providing a known startup configuration.
+- Default values for REG signals have been removed, allowing 'X' propagation during simulation until the design reaches steady state.
 
-## Enable GitHub actions to build the results page
+# How to test
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+The ChipTune project can be interfaced to a computer COM port (9600,n,8,1).
+An analog PWM filter and audio driver are needed for the test rig.
 
-## Resources
+## Inputs
 
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://discord.gg/rPK2nSjxy8)
+- CLK is a 1.789733 MHz clock
+- RSTN is an active-low asynchronous reset
+- RX
 
-## What next?
+## Outputs
 
-- Submit your design to the next shuttle [on the website](https://tinytapeout.com/#submit-your-design). The closing date is **November 4th**.
-- Edit this [README](README.md) and explain your design, how it works, and how to test it.
-- Share your GDS on your social network of choice, tagging it #tinytapeout and linking Matt's profile:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [matt-venn](https://www.linkedin.com/in/matt-venn/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - Twitter [#tinytapeout](https://twitter.com/hashtag/tinytapeout?src=hashtag_click) [@matthewvenn](https://twitter.com/matthewvenn)
+- BLINK is an LED status indicator with a 1 Hz rate
+- LINK is an LED activity indicator of the RX signal
+- TX generates a frame synchonization character (0x80)
+- PWM is the pulse-width modulated audio output summed for all channels
+- SQUARE1 is the PWM for addresses 0 through 3
+- SQAURE2 is the PWM for addresses 4 through 7
+- TRIANGLE is the PWM for addresses 8 through 11
+- NOISE is the PWM for addresses 12 through 15
 
+## Bidirectional
+
+- None
+
+## Design For Test Considerations
+
+All relevant signals are available on the motherboard's PMOD connectors. The system clock is generated on the motherboard.
+
+# Summary
+
+An external serial port can play synthetic game music through this TT05 project.
