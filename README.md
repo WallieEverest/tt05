@@ -32,7 +32,7 @@ An analog PWM filter and audio driver are needed for the test rig.
 
 ## Inputs
 
-- CLK is a 1.789733 MHz clock
+- CLK is a 1.789773 MHz clock (NTSC 3.579545/2)
 - RST_N is an active-low asynchronous reset
 - RX
 

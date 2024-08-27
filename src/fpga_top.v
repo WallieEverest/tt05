@@ -21,7 +21,8 @@ module fpga_top (
   input  wire [7:0] ui_in,   // PMOD
   output wire [7:0] uo_out,  // PMOD
   output wire       tx,      // PIO_3[7], pin 8  (RS232_TX)
-  output wire [4:0] led      // PIO_1[10:14]
+  output wire [4:0] led,     // PIO_1[10:14]
+  output wire       clk_11mhz
 ) /* synthesis syn_hier="fixed" */;
 
   wire apu_clk;
@@ -73,5 +74,11 @@ module fpga_top (
     .triangle(triangle),
     .tx      (tx) 
   );
+
+pll_wrapper pll_inst (
+  .REFERENCECLK(clk),
+  .RESETB      (rtsn),
+  .PLLOUTCORE  (clk_11mhz)
+);
 
 endmodule

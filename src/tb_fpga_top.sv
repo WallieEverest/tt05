@@ -54,14 +54,16 @@ module a_tb_fpga_top ();
     .ui_in(ui_in),
     .uo_out(uo_out),
     .tx(),
-    .led()
+    .led(),
+    .clk_11mhz()
   );
 
   initial forever #41.7ns clk = ~clk;   // 12 MHz system clock
   initial forever #52083ns sck = ~sck;  // 9,600 baud UART
 
   initial begin
-    repeat (2) @(negedge sck);
+    #1us;
+    repeat (2) @(negedge clk);
     rtsn <= 1;
 
     // # Square 1

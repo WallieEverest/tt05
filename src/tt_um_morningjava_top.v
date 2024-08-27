@@ -18,7 +18,7 @@
 `default_nettype none
 
 module tt_um_morningjava_top (
-  input  wire       clk,      // System clock, 1.789773 MHz
+  input  wire       clk,      // System clock, 1.789773 MHz clock (NTSC 3.579545/2)
   /* verilator lint_off UNUSEDSIGNAL */
   input  wire       rst_n,    // Active-low asynchronous reset
   input  wire       ena,      // (unused) Active-high design is selected

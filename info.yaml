@@ -100,5 +100,5 @@ documentation:
   external_hw: "Computer COM port"
   discord:     "morningjava"
   doc_link:    "https://github.com/WallieEverest/tt05/blob/main/README.md"
-  clock_hz:    1789773  # Clock frequency in Hz
+  clock_hz:    1789773  # Clock frequency in Hz (NTSC 3.579545/2)
   picture:     "./image/tt05.png"

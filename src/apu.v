@@ -11,7 +11,7 @@
 `default_nettype none
 
 module apu #(
-  parameter CLKRATE = 1_789_773,  // APU clock frequency, 21.477 MHz/12 or 1.89 GHz/88/12
+  parameter CLKRATE = 1_789_773,  // APU clock frequency, NTSC 3.579545/2 MHz, or 59/33 MHz
   parameter BAUDRATE = 9600       // serial baud rate
 )(
   input  wire clk,       // APU clock
